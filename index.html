@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Darling ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0b0114;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1b0a2a 0%, #0b0114 100%);
+            z-index: -1;
+        }
+
+        /* 1. LOCK SCREEN */
+        #lock-screen {
+            position: fixed;
+            inset: 0;
+            background: #ff4d6d;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 1.5s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+
+        .collect-heart {
+            font-size: 6rem;
+            cursor: pointer;
+            position: absolute;
+            z-index: 10000;
+            filter: drop-shadow(0 0 20px white);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 30px #ffb3c1); }
+        }
+
+        /* 2. GLASS CARDS */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s ease-out;
+        }
+
+        .glass-card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .heart-count {
+            font-family: 'Dancing Script', cursive;
+            color: #ff4d6d;
+            font-size: 2.5rem;
+        }
+
+        /* 3. THE MYSTERY BOX */
+        #mystery-vault {
+            display: none;
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(45deg, #ff4d6d, #ff0055);
+            border-radius: 50%;
+            margin: 40px auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            box-shadow: 0 0 50px rgba(255, 77, 109, 0.5);
+            animation: bounce-float 3s infinite ease-in-out;
+        }
+
+        @keyframes bounce-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        /* 4. FINAL SURPRISE */
+        #final-reveal {
+            position: fixed;
+            inset: 0;
+            background: #0b0114;
+            z-index: 11000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .final-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: #ff4d6d;
+            text-shadow: 0 0 20px #ff4d6d;
+            margin-bottom: 10px;
+        }
+
+        .final-darling {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #ffb3c1;
+            animation: pulseText 2s infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Sparkle Cursor */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            width: 8px; height: 8px;
+            background: #ffb3c1;
+            border-radius: 50%;
+            animation: fade-sparkle 1s forwards;
+        }
+        @keyframes fade-sparkle { to { opacity: 0; transform: scale(3); } }
+    </style>
+</head>
+<body onmousemove="spawnSparkle(event)">
+
+    <div id="starfield"></div>
+
+    <div id="lock-screen">
+        <h1 style="font-family: 'Dancing Script'; font-size: 3rem;">Touch my heart...</h1>
+        <p style="margin-top: 10px; opacity: 0.8;">Find 3 hidden hearts to begin</p>
+        <div id="counter" style="font-size: 2.5rem; margin-top: 20px; font-weight: bold;">0/3</div>
+    </div>
+
+    <audio id="bgm" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="scroll-journey"></div>
+
+    <section>
+        <div class="glass-card" id="vault-card">
+            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; color: #ff4d6d;">A Gift For Your Patience</h2>
+            <p style="margin-top: 15px; opacity: 0.9;">You scrolled through my heart. Now, open my soul.</p>
+            <div id="mystery-vault" onclick="launchSurprise()">🎁</div>
+        </div>
+    </section>
+
+    <div id="final-reveal">
+        <h1 class="final-title">Happy Valentine's Day</h1>
+        <h2 class="final-darling">Darling ❤️</h2>
+        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" style="width: 280px; border-radius: 30px; margin: 30px; border: 3px solid #ff4d6d;">
+        <p style="font-size: 1.2rem; max-width: 500px; line-height: 1.6; color: #ffdde1;">
+            Thank you for being the most incredible part of my life. You are my moon and all my stars. I love you forever.
+        </p>
+    </div>
+
+    <script>
+        const journey = document.getElementById('scroll-journey');
+        const notes = [
+            "You are my favorite thought.", "I love the way you look at me.", "Your laugh is my favorite song.",
+            "I'm so lucky you're mine.", "Every day with you is a gift.", "You're my soul's home.",
+            "You make my world beautiful.", "I cherish every second with you.", "You are my best friend.",
+            "I promise to always be yours.", "I love our little moments.", "You are my peace.",
+            "I'm so proud of you.", "You are stunningly perfect.", "I love you more than words.",
+            "You are the queen of my heart.", "I am eternally yours.", "You are my magic.",
+            "I love you more than life.", "One last surprise for you..."
+        ];
+
+        notes.forEach((txt, i) => {
+            const s = document.createElement('section');
+            s.innerHTML = `
+                <div class="glass-card">
+                    <span class="heart-count">#${i + 1}</span>
+                    <p style="font-size: 1.3rem; margin-top: 10px; font-style: italic;">"${txt}"</p>
+                </div>`;
+            journey.appendChild(s);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.querySelector('.glass-card').classList.add('active');
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+        let caught = 0;
+        function spawnH() {
+            const h = document.createElement('div');
+            h.className = 'collect-heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 70 + 15 + 'vw';
+            h.style.top = Math.random() * 70 + 15 + 'vh';
+            h.onclick = () => {
+                caught++;
+                document.getElementById('counter').innerText = caught + '/3';
+                h.remove();
+                if (caught < 3) spawnH();
+                else {
+                    document.getElementById('lock-screen').style.transform = 'translateY(-100%)';
+                    document.getElementById('bgm').play();
+                    document.getElementById('mystery-vault').style.display = 'flex';
+                }
+            };
+            document.getElementById('lock-screen').appendChild(h);
+        }
+        window.onload = spawnH;
+
+        function spawnSparkle(e) {
+            const s = document.createElement('div');
+            s.className = 'sparkle';
+            s.style.left = e.clientX + 'px';
+            s.style.top = e.clientY + 'px';
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), 1000);
+        }
+
+        function launchSurprise() {
+            document.getElementById('final-reveal').style.display = 'flex';
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.innerHTML = '❤️';
+                h.style.position = 'fixed';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.top = '-20px';
+                h.style.fontSize = Math.random() * 20 + 15 + 'px';
+                h.style.color = '#ff4d6d';
+                h.style.transition = 'top 4s linear';
+                h.style.zIndex = '12000';
+                document.body.appendChild(h);
+                setTimeout(() => { h.style.top = '110vh'; }, 10);
+                setTimeout(() => h.remove(), 4000);
+            }, 100);
+        }
+    </script>
+</body>
+</html>
